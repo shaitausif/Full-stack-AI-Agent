@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+
 const AuthCheck = ({children, protected : protectedRoute}) => {
 
   const navigate = useNavigate()
@@ -24,6 +25,7 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
       }else{
         // Not Authenticated
         if(protectedRoute){
+          
           navigate("/login")
         }else{
           setloading(false)

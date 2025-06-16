@@ -30,12 +30,13 @@ const SignUp = () => {
       const data = await res.json();
       if (res.ok) {
         toast.success("Signed up Successfully", { closeOnClick: true, autoClose: 3000, transition: Bounce });
-        dispatch(setuserData(data.user));
+        dispatch(setuserData(data.data.user));
         reset();
         navigate("/");
 
       } else {
-        toast.error(data.error || "Signup Failed", { closeOnClick: true ,autoClose: 3000, transition: Bounce });
+        console.log(data)
+        toast.error(data.message || "Signup Failed", { closeOnClick: true ,autoClose: 3000, transition: Bounce });
       }
     } catch (error) {
       console.log("Unable to signup the user", error);
@@ -98,7 +99,7 @@ const SignUp = () => {
           <button
             type="submit"
             disabled={loading}
-            className="bg-blue-500 hover:bg-blue-600 p-2 rounded text-white font-semibold mt-2"
+            className="bg-blue-500 w-30 hover:bg-blue-600 p-2 rounded duration-300 text-white font-semibold mt-2"
           >
             {loading ? (<span className="loading loading-spinner loading-sm md:loading-lg"></span>) : "Sign Up"}
           </button>

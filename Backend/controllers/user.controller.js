@@ -10,8 +10,8 @@ export const signUp = async (req, res) => {
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    // const isUserExists = await User.findOne({ email });
-    // if (isUserExists) throw new Error("User already Exists");
+    const isUserExists = await User.findOne({ email });
+    if (isUserExists) throw new Error("User already Exists");
 
     const createdUser = await User.create({
       email,
@@ -27,7 +27,8 @@ export const signUp = async (req, res) => {
       // name of the event
       name: "user/signup",
       data: {
-        email,  
+          
+        userId: user._id
       },
     });
 
@@ -43,7 +44,7 @@ export const signUp = async (req, res) => {
 
     res.status(200).cookie("accessToken", token, options).json(new ApiResponse(200,{user, token},"Signup successfully"));
   } catch (error) {
-    res.status(500).json(new ApiResponse(500,{},`Signup Failed: ${error.message}`))
+    res.status(500).json(new ApiResponse(500,{},`Signup Faileds: ${error.message}`))
   }
 };
 

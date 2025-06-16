@@ -10,9 +10,9 @@ export const onUserSignUp = inngest.createFunction(
     {event : "user/signup"},
     async({event, step}) => {
         try {
-            const {email} = event.data
+            const {userId} = event.data
             const user = await step.run("get-user-email", async() => {
-                const userObject = await User.findOne({email})
+                const userObject = await User.findById(userId)
                 if(!userObject){
                     // An error that, when thrown, indicates to Inngest that the function should cease all execution and not retry.
                     throw new NonRetriableError("User no longer exists in our database")

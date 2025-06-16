@@ -45,7 +45,7 @@ export const getTickets = async(req, res) => {
         }
 
         return res.status(200)
-        .json(new ApiResponse(200,{tickets},"Tickets fetched successfully"))
+        .json(new ApiResponse(200,tickets,"Tickets fetched successfully"))
         
     } catch (error) {
         return res.status(500)
@@ -68,14 +68,13 @@ export const getTicket = async(req, res) => {
                 _id : req.params.id
             })
             .populate("assignedTo", ["email", "_id"])
-            .select("title description status createdAt assignedTo")
-            
+                        
         }
 
         if(!ticket) return res.status(404).json(new ApiResponse(404,{},"Ticket not found"))
 
         return res.status(200)
-        .json(new ApiResponse(200,{ticket},"Ticket fetched successfully"))
+        .json(new ApiResponse(200,ticket,"Ticket fetched successfully"))
 
     } catch (error) {
         return res.status(500)
