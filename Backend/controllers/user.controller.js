@@ -33,7 +33,7 @@ export const signUp = async (req, res) => {
     });
 
     const token = jwt.sign(
-      { _id: user._id, role: user.role },
+      { _id: user._id, role: user.role , email : user.email},
       process.env.JWT_SECRET
     );
 
@@ -64,7 +64,7 @@ export const login = async (req, res) => {
       return res.status(401).json(new ApiResponse(401,{}, "Invalid Credentials"));
 
     const token = jwt.sign(
-      { _id: user._id, role: user.role },
+      { _id: user._id, role: user.role, email: user.email },
       process.env.JWT_SECRET
     );
     // Here, for this application I am verifying the user only with the single token which is the access token
@@ -135,7 +135,7 @@ export const getUsers = async(req, res) => {
 
         const users = await User.find().select("-password")
         res.status(200)
-        .json(new ApiResponse(200,{},users))
+        .json(new ApiResponse(200,users,"Users fetched successfully"))
 
     } catch (error) {
         res.status(500).json(new ApiResponse(500,{},`Failed to get Users: ${error.message}`))
@@ -146,4 +146,4 @@ export const getUsers = async(req, res) => {
 
 export const authenticateUser = async(req, res) => {
   return res.status(200).json({authenticated : true, user : req.user})
-}
+} 

@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { setuserData } from '../features/data/dataSlice'
 
 
 const AuthCheck = ({children, protected : protectedRoute}) => {
 
   const navigate = useNavigate()
   const [loading, setloading] = useState(true)
+  const dispatch = useDispatch()
 
 
 
@@ -17,6 +20,7 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
       const data = await res.json();
       if(data.authenticated){
         // Authenticated
+        dispatch(setuserData(data.user))
         if(!protectedRoute){
           navigate("/")
         }else{

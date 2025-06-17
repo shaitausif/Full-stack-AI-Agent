@@ -12,6 +12,7 @@ import { Provider } from 'react-redux';
 import { store } from './store/Store';
 import { ToastContainer } from "react-toastify";
 import { Bounce } from "react-toastify";
+import Navbar from "./components/Navbar.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -35,6 +36,7 @@ createRoot(document.getElementById("root")).render(
           path="/"
           element={
             <AuthCheck protected={true}>
+              <Navbar/>
               <Tickets />
             </AuthCheck>
           }
@@ -43,6 +45,7 @@ createRoot(document.getElementById("root")).render(
           path="/ticket/:id"
           element={
             <AuthCheck protected={true}>
+              <Navbar/>
               <Ticket />
             </AuthCheck>
           }
@@ -67,6 +70,7 @@ createRoot(document.getElementById("root")).render(
           path="/admin"
           element={
             <AuthCheck protected={true}>
+              <Navbar/>
               <Admin />
             </AuthCheck>
           }
