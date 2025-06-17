@@ -129,7 +129,7 @@ export const updateUser = async(req, res) => {
 export const getUsers = async(req, res) => {
     try {
         // Here in this function i will only give access to the admin and moderator to get all the users
-        if(req.user?.role !== "admin" || req.user?.role !== "moderator" ){
+        if(req.user?.role !== 'admin'){
             return res.status(403).json(new ApiResponse(403,{},"Forbidden"))
         }
 
@@ -142,6 +142,26 @@ export const getUsers = async(req, res) => {
     }
 }
 
+
+// controller for searching the user on the basis of their email
+export const searchUser = async(req, res) => {
+  try {
+    const {email} = req.params
+    const users = await User.find(
+      {
+        email : {   
+            $regex : email,
+            $options : 'i'
+        }
+      }
+    ).select("email role skills")
+    if(!users) return res.status(404).json(new ApiResponse(404,{},"No user found"))
+
+    return res.status(200).json(new ApiResponse(200,users,"Users found"))
+  } catch (error) {
+    return res.status(500).json(new ApiResponse(500,{},"Failed to fetch the user's data"))
+  }
+}
 
 
 export const authenticateUser = async(req, res) => {

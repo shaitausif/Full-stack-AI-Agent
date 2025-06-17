@@ -163,7 +163,7 @@ const Tickets = () => {
                 Tickets.map((ticket) => (
               <div onClick={() => {navigate(`/ticket/${ticket._id}`)}}
                 key={ticket._id}
-                className="tickets hover:border border border-[#1A2433] duration-300 hover:border-gray-400 flex flex-col gap-1 bg-[#1A2433] w-full h-fit rounded-lg py-2 px-4 my-3"
+                className="tickets border border-[#1A2433] duration-300 hover:border-gray-400 flex flex-col gap-1 bg-[#1A2433] w-full h-fit rounded-lg py-2 px-4 my-3"
               >
                 <div>
                   <h2 >{ticket.title}</h2>

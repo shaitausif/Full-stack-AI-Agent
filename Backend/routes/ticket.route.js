@@ -11,4 +11,5 @@ router.route("/").get(authenticate, getTickets)
 router.route("/:id").get(authenticate, getTicket)
 
 
+
 export default router

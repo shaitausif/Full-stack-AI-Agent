@@ -20,12 +20,19 @@ const SignUp = () => {
   const handleSignUp = async (formData) => {
     setloading(true);
     try {
+
+      const arr = formData.skills?.split(",")  
+      const dataa = {
+        email : formData.email,
+        password : formData.password,
+        skills : arr
+      }
       const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(dataa),
       });
       const data = await res.json();
       if (res.ok) {

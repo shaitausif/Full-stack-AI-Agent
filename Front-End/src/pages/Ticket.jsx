@@ -59,7 +59,7 @@ const Ticket = () => {
                 <h4><span className="font-semibold">Related Skills</span>: {ticketData.relatedSkills?.join(", ")}</h4>
                 <h4><span className="font-semibold">Helpful Notes</span>: <br /></h4>
                 <p className="md:text-base text-sm">{ticketData.helpfulNotes}</p>
-                <h4><span className="font-semibold">Assigned To: </span>{ticketData.assignedTo ? ticketData.assignedTo : "Not Assigned yet."}</h4>
+                <h4><span className="font-semibold">Assigned To: </span>{ticketData.assignedTo ? ticketData.assignedTo?.email : "Not Assigned yet."}</h4>
                 <h4><span className="font-semibold">Created By: </span>{ticketData.createdBy?.email}</h4>
                 <p className="md:text-sm text-[12px] text-gray-400 mt-2">{new Date(ticketData.createdAt).toLocaleString("en-US", {
                       month: "long",
