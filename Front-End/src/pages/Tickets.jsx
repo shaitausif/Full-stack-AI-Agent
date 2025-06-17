@@ -4,11 +4,17 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Bounce } from "react-toastify";
 import { RefreshCcw } from "lucide-react";
+import { useDispatch } from "react-redux";
+import { setuserData } from "../features/data/dataSlice";
 
 const Tickets = () => {
   const [Tickets, setTickets] = useState([]);
   const [fetchLoading, setfetchLoading] = useState(false);
   const [loading, setloading] = useState(false);
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate();
+
 
   const {
     register,
@@ -16,6 +22,8 @@ const Tickets = () => {
     formState: { errors },
     reset,
   } = useForm();
+
+  
 
   const fetchTickets = async () => {
     try {
@@ -53,6 +61,7 @@ const Tickets = () => {
           autoClose: 3000,
           transition: Bounce,
         });
+        fetchTickets()
         reset();
       } else {
         toast.warn("Ticket Creation Failed", {
@@ -68,23 +77,11 @@ const Tickets = () => {
     }
   };
 
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    let res = await fetch("/api/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    });
-    const data = await res.json();
-    if (data?.message) {
-      toast.success("Logout successfully");
-      navigate("/login");
-    }
-  };
+  
 
   return (
     <>
-      <div className="flex w-full min-h-screen flex-col gap-6 items-center mx-auto py-6">
+      <div className="flex w-full min-h-screen flex-col gap-6 items-center mx-auto">
         <div className="w-[50vw] ">
           <h2 className="text-xl md:text-2xl py-6">Create Ticket</h2>
 
@@ -137,7 +134,7 @@ const Tickets = () => {
               <div className="w-full text-start">
                 <button
                   type="submit"
-                  className="bg-blue-500 w-30 hover:bg-blue-600 p-2 rounded duration-300 text-white font-semibold"
+                  className="bg-blue-500 min-w-30 hover:bg-blue-600 p-2 px-4 rounded duration-300 text-white font-semibold"
                 >
                   {loading ? (
                     <span className="loading loading-spinner loading-sm md:loading-lg"></span>
@@ -176,6 +173,7 @@ const Tickets = () => {
                 </div>
                 <div className="text-[12px] text-gray-400 mt-1">
                   <p>
+                    
                     {new Date(ticket.createdAt).toLocaleString("en-US", {
                       month: "long",
                       day: "numeric",

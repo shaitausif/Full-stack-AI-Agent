@@ -2,16 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     user : {
-        username : '',
-        email : '',
-        skills : [],
-        role : ''
+        
     }
 }
 
 
 export const dataSlice = createSlice({
-    name : "data",
+    name : 'data',
     initialState,
     reducers : {
         setuserData : (state, action) => {
