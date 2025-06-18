@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target: env.VITE_BACKEND_URL, // now it works!
           changeOrigin: true,
-          secure: false,
+          secure: true, // true in production
         },
       },
     },

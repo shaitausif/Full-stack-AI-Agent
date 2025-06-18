@@ -27,7 +27,7 @@ const Navbar = () => {
             toast.error(data.message)
         }
     } catch (error) {
-        console.log("Unable to logout the user", error.message)
+        console.log("Unable to logout the user", error)
     }finally{
         setloading(false)
     }
