@@ -37,7 +37,7 @@ app.use("/api/inngest", serve({client : inngest, functions : [onUserSignUp, onTi
 // Connecting the backend with the database
 ConnectDB()
 .then(() => {
-    app.listen(process.env.PORT || 4000 ,() => {
+    app.listen(process.env.PORT || 8000 ,() => {
         console.log(`Server is running at http://localhost:${process.env.PORT}`)
     })
 }).catch((err) => {
