@@ -61,8 +61,11 @@ const Tickets = () => {
           autoClose: 3000,
           transition: Bounce,
         });
-        fetchTickets()
         reset();
+        setTimeout(() => {
+          fetchTickets()
+        }, 10000);
+        
       } else {
         toast.warn("Ticket Creation Failed", {
           closeOnClick: true,
@@ -82,15 +85,15 @@ const Tickets = () => {
   return (
     <>
       <div className="flex w-full min-h-screen flex-col gap-6 items-center mx-auto">
-        <div className="w-[50vw] ">
-          <h2 className="text-xl md:text-2xl py-6">Create Ticket</h2>
+        <div className="md:w-[50vw] mx-4 md:mx-auto">
+          <h2 className="text-lg md:text-2xl py-3 md:py-6 md:text-start text-center">Create Ticket</h2>
 
           <form onSubmit={handleSubmit(submitTicket)}>
             <div className="flex flex-col gap-5">
               <div>
                 <input
                   placeholder="Ticket Title"
-                  className="w-full outline-none border border-gray-600 shadow-lg transition-all duration-500 focus:border-gray-400 rounded-md md:px-2 py-1 md:text-base text-sm"
+                  className="w-full outline-none border border-gray-600 shadow-lg transition-all duration-500 focus:border-gray-400 rounded-md px-2 py-1 md:text-base text-sm"
                   type="text"
                   {...register("title", {
                     minLength: {
@@ -113,7 +116,7 @@ const Tickets = () => {
               <div>
                 <textarea
                   placeholder="Ticket Description"
-                  className="w-full outline-none border border-gray-600 shadow-lg transition-all duration-500 focus:border-gray-400 rounded-md md:px-2 py-1 md:text-base text-sm"
+                  className="w-full outline-none border border-gray-600 shadow-lg transition-all duration-500 focus:border-gray-400 rounded-md px-2 py-1 md:text-base text-sm"
                   {...register("description", {
                     minLength: {
                       value: 30,
@@ -131,10 +134,10 @@ const Tickets = () => {
                   </span>
                 )}
               </div>
-              <div className="w-full text-start">
+              <div className="w-full text-center md:text-start">
                 <button
                   type="submit"
-                  className="bg-blue-500 min-w-30 hover:bg-blue-600 p-2 px-4 rounded duration-300 text-white font-semibold"
+                  className="bg-blue-500 w-fit mx-auto md:text-base text-sm hover:bg-blue-600 md:px-5 md:py-2 px-3 py-1.5 rounded duration-300 text-white font-semibold"
                 >
                   {loading ? (
                     <span className="loading loading-spinner loading-sm md:loading-lg"></span>
@@ -148,7 +151,7 @@ const Tickets = () => {
           {/* <div className='w-full h-[1px] bg-gray-500 hover:bg-gray-400 my-8 shadow-2xl rounded-full'></div> */}
           {/* show all the tickets */}
           <div className="mt-5 mb-2 flex justify-between">
-            <h2 className="text-xl">All Tickets</h2>
+            <h2 className="text-lg md:text-xl">All Tickets</h2>
             {fetchLoading ? (
               <span className="loading loading-spinner loading-sm md:loading-lg"></span>
             ) : (
@@ -157,16 +160,16 @@ const Tickets = () => {
               </div>
             )}
           </div>
-          <div className="h-[40vh] overflow-y-auto">
+          <div className="md:h-[40vh] h-[50vh] overflow-y-auto">
             {
               Tickets.length > 0 ? (
                 Tickets.map((ticket) => (
               <div onClick={() => {navigate(`/ticket/${ticket._id}`)}}
                 key={ticket._id}
-                className="tickets border border-[#1A2433] duration-300 hover:border-gray-400 flex flex-col gap-1 bg-[#1A2433] w-full h-fit rounded-lg py-2 px-4 my-3"
+                className="tickets border border-[#1A2433] duration-300 hover:border-gray-400 flex flex-col gap-1 bg-[#1A2433] w-full h-fit rounded-lg py-2 px-3 md:px-4 my-2 md:my-3"
               >
                 <div>
-                  <h2 >{ticket.title}</h2>
+                  <h2 className="md:text-base text-[15px]">{ticket.title}</h2>
                 </div>
                 <div className="text-sm">
                   <p>{ticket.description}</p>
@@ -187,7 +190,7 @@ const Tickets = () => {
               </div>
             ))
               ) : (<div className="flex justify-center w-full">
-                <h3>No Tickets to display</h3>
+                <h3 className="text-[15px]">No Tickets to display</h3>
               </div>)
             }
           </div>
