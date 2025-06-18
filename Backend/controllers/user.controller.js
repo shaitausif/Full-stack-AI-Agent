@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import { inngest } from "../inngest/client.js";
-import { ApiResponse } from "../utils/apiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 // I am actually not using those wrapper function asyncHandler as i had used it in one of my backend project so here instead of it i will use trycatch everywhere
 export const signUp = async (req, res) => {
@@ -71,7 +71,7 @@ export const login = async (req, res) => {
     // so to make the cookie unmodifiable from the front-end we use few options
     const options = {
       httpOnly: true,
-      secure: false, // true in production
+      secure: true, // true in production
     };
     res.status(200).cookie("accessToken", token, options).json(new ApiResponse(200, {user,token}, "Login Successful"));
   } catch (error) {
@@ -89,7 +89,7 @@ export const logout = async (req, res) => {
 
     res.clearCookie("accessToken", {
       httpOnly: true,
-      secure: false, // match what you used while setting it
+      secure: true, // match what you used while setting it
     });
 
     res.status(200).json(new ApiResponse(200,{}, "Logout successful"));

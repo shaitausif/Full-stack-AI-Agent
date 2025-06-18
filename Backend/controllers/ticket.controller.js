@@ -1,6 +1,6 @@
 import { inngest } from "../inngest/client.js";
 import Ticket from "../models/ticket.model.js";
-import { ApiResponse } from "../utils/apiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 // So here First I'll create the ticket and then the background tasks will be handled by the inngest and I will do that by giving the inngest an event of ticket/created for which i had already created a handler also
 
