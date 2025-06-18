@@ -188,7 +188,7 @@ const Admin = () => {
                           toggleEdit(user._id);
                         }, 100);
                       }}
-                      className="text-start w-fit cursor-pointer bg-green-600 px-5 hover:bg-green-700 md:px-5 px-4 md:py-2 py-1 rounded duration-300 text-white font-semibold mt-2 md:mt-3 "
+                      className="text-start w-fit cursor-pointer bg-green-600 hover:bg-green-700 md:px-5 px-4 md:py-2 py-1 rounded duration-300 text-white font-semibold mt-2 md:mt-3 "
                     >
                       Save
                     </button>
