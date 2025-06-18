@@ -39,7 +39,7 @@ export const signUp = async (req, res) => {
 
     const options = {
       httpOnly : true,
-      secure : false
+      secure : true
     }
 
     res.status(200).cookie("accessToken", token, options).json(new ApiResponse(200,{user, token},"Signup successfully"));
