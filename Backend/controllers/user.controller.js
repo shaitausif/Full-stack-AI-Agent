@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
 import { inngest } from "../inngest/client.js";
-import { ApiResponse } from "../utils/apiResponse.js";
+import { ApiResponse } from "../utils/ApiResponse.js";
 
 // I am actually not using those wrapper function asyncHandler as i had used it in one of my backend project so here instead of it i will use trycatch everywhere
 export const signUp = async (req, res) => {
