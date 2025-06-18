@@ -40,13 +40,13 @@ const Ticket = () => {
 
   return (
     <div className="flex w-full min-h-screen flex-col gap-6 items-center mx-auto pb-6">
-        <div className="w-[50vw]">
-          <h2 className="text-xl md:text-2xl py-6">Ticket Details</h2>
+        <div className=" mx-4 md:mx-auto md:w-[50vw]">
+          <h2 className="text-lg md:text-2xl md:text-start text-center py-3 md:py-6">Ticket Details</h2>
 
           <div className="w-full md:p-5 p-3 rounded-lg bg-[#1A2433]">
             <div className="flex flex-col md:gap-3 gap-2"> 
               <h2 className="md:text-xl text-md">{ticketData.title}</h2>
-              <p>{ticketData.description}</p>
+              <p >{ticketData.description}</p>
             </div>
             <div className="flex items-center my-6">
               <hr className="flex-grow border-gray-500" />
@@ -58,7 +58,7 @@ const Ticket = () => {
                 <h4><span className="font-semibold">Priority</span>: {ticketData.priority}</h4>
                 <h4><span className="font-semibold">Related Skills</span>: {ticketData.relatedSkills?.join(", ")}</h4>
                 <h4><span className="font-semibold">Helpful Notes</span>: <br /></h4>
-                <p className="md:text-base text-sm">{ticketData.helpfulNotes}</p>
+                <p className="md:text-base text-sm tracking-wide">{ticketData.helpfulNotes}</p>
                 <h4><span className="font-semibold">Assigned To: </span>{ticketData.assignedTo ? ticketData.assignedTo?.email : "Not Assigned yet."}</h4>
                 <h4><span className="font-semibold">Created By: </span>{ticketData.createdBy?.email}</h4>
                 <p className="md:text-sm text-[12px] text-gray-400 mt-2">{new Date(ticketData.createdAt).toLocaleString("en-US", {
