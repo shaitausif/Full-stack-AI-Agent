@@ -11,13 +11,13 @@ const app = express()
 // It's not a very big application i am building it just for learning purpose that's why i am not following the best practices for designing the backend like using standardized file structure, controllers, db, routes, utils like these cause it's not any big application which will showcase my skills and help me to standout.
 dotenv.config()
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://ticket-ai-two.vercel.app"
-];
+// const allowedOrigins = [
+//   "http://localhost:5173",
+//   "https://ticket-ai-two.vercel.app"
+// ];
 
 app.use(cors({
-  origin: allowedOrigins, // Must match your frontend origin
+  origin: "https://ticket-ai-two.vercel.app", // Must match your frontend origin
   credentials: true
 }));
 
