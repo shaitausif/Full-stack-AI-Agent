@@ -85,6 +85,8 @@ export const login = async (req, res) => {
       .status(200)
       .cookie("accessToken", token, options)
       .json(new ApiResponse(200, { user, token }, "Login Successful"));
+
+      console.log("Set-Cookie Header:", res.getHeader("Set-Cookie"));
   } catch (error) {
     res
       .status(500)
@@ -103,6 +105,7 @@ export const logout = async (req, res) => {
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: true, // match what you used while setting it
+      sameSite : "None"
     });
 
     res.status(200).json(new ApiResponse(200, {}, "Logout successful"));

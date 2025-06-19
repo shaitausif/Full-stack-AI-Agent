@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 export const authenticate = (req, res, next) => {
   try {
     const token = req.cookies?.accessToken || req.headers.authorization?.split(" ")[1];
+    console.log(token)
     if (!token) return res.status(401).json({authenticated : false,  errors: "Access Denied. No token found" });
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET)
