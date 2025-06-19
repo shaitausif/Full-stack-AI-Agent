@@ -9,7 +9,7 @@ export const sendMail = async (to, subject, text) => {
       host: process.env.MAILTRAP_SMTP_HOST,
       port: process.env.MAILTRAP_SMTP_PORT,
     //   make sure to remove this sucure : false before pushing the app on production
-      secure: false, // true for 465, false for other ports
+       // true for 465, false for other ports
       auth: {
         user: process.env.MAILTRAP_SMTP_USER,
         pass: process.env.MAILTRAP_SMTP_PASS,

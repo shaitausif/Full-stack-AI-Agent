@@ -44,7 +44,7 @@ export const signUp = async (req, res) => {
 
     res.status(200).cookie("accessToken", token, options).json(new ApiResponse(200,{user, token},"Signup successfully"));
   } catch (error) {
-    res.status(500).json(new ApiResponse(500,{},`Signup Faileds: ${error.message}`))
+    res.status(500).json(new ApiResponse(500,{},`Signup Failed: ${error.message}`))
   }
 };
 

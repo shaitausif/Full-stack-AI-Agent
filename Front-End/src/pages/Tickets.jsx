@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { Bounce } from "react-toastify";
 import { RefreshCcw } from "lucide-react";
 import { useDispatch } from "react-redux";
-import { setuserData } from "../features/data/dataSlice";
 
 const Tickets = () => {
   const [Tickets, setTickets] = useState([]);
@@ -28,7 +27,7 @@ const Tickets = () => {
   const fetchTickets = async () => {
     try {
       setfetchLoading(true);
-      const res = await fetch("/api/tickets/", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/tickets/`, {
         method: "GET",
         credentials: "include",
       });
@@ -48,7 +47,7 @@ const Tickets = () => {
   const submitTicket = async (data) => {
     try {
       setloading(true);
-      const res = await fetch("/api/tickets", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/tickets`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
