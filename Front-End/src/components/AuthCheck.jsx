@@ -36,7 +36,7 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
         }
       }
     } catch (err) {
-      console.log("Unable to fetch the user token information", err)
+      console.log("Unable to fetch the user token information", err,data)
 
     }finally{
       setloading(false)

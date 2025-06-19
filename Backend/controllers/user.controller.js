@@ -17,9 +17,9 @@ export const signUp = async (req, res) => {
       email,
       password: hashedPassword,
       skills,
-    })
-    
-    const user = await User.findById(createdUser._id).select("-password")
+    });
+
+    const user = await User.findById(createdUser._id).select("-password");
 
     // Fire inngest events like sending mail to the user for signing up successfully
 
@@ -27,24 +27,29 @@ export const signUp = async (req, res) => {
       // name of the event
       name: "user/signup",
       data: {
-          
-        userId: user._id
+        userId: user._id,
       },
     });
 
     const token = jwt.sign(
-      { _id: user._id, role: user.role , email : user.email},
+      { _id: user._id, role: user.role, email: user.email },
       process.env.JWT_SECRET
     );
 
     const options = {
-      httpOnly : true,
-      secure : true
-    }
+      httpOnly: true,
+      secure: true, // MUST be true on production with HTTPS
+      sameSite: "None", // VERY IMPORTANT for cross-site cookies
+    };
 
-    res.status(200).cookie("accessToken", token, options).json(new ApiResponse(200,{user, token},"Signup successfully"));
+    res
+      .status(200)
+      .cookie("accessToken", token, options)
+      .json(new ApiResponse(200, { user, token }, "Signup successfully"));
   } catch (error) {
-    res.status(500).json(new ApiResponse(500,{},`Signup Failed: ${error.message}`))
+    res
+      .status(500)
+      .json(new ApiResponse(500, {}, `Signup Failed: ${error.message}`));
   }
 };
 
@@ -55,13 +60,15 @@ export const login = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json(new ApiResponse(404,{}, "User not found"));
+      return res.status(404).json(new ApiResponse(404, {}, "User not found"));
     }
 
     const isCorrectPassword = await bcrypt.compare(password, user.password);
 
     if (!isCorrectPassword)
-      return res.status(401).json(new ApiResponse(401,{}, "Invalid Credentials"));
+      return res
+        .status(401)
+        .json(new ApiResponse(401, {}, "Invalid Credentials"));
 
     const token = jwt.sign(
       { _id: user._id, role: user.role, email: user.email },
@@ -71,11 +78,17 @@ export const login = async (req, res) => {
     // so to make the cookie unmodifiable from the front-end we use few options
     const options = {
       httpOnly: true,
-      secure: true, // true in production
+      secure: true, // MUST be true on production with HTTPS
+      sameSite: "None", // VERY IMPORTANT for cross-site cookies
     };
-    res.status(200).cookie("accessToken", token, options).json(new ApiResponse(200, {user,token}, "Login Successful"));
+    res
+      .status(200)
+      .cookie("accessToken", token, options)
+      .json(new ApiResponse(200, { user, token }, "Login Successful"));
   } catch (error) {
-    res.status(500).json(new ApiResponse(500,{}`Login Failed: ${error.message}`));
+    res
+      .status(500)
+      .json(new ApiResponse(500, {}`Login Failed: ${error.message}`));
   }
 };
 
@@ -84,7 +97,7 @@ export const logout = async (req, res) => {
     const token = req.cookies?.accessToken;
 
     if (!token) {
-      return res.status(200).json(new ApiResponse(200,{}, "No token found"));
+      return res.status(200).json(new ApiResponse(200, {}, "No token found"));
     }
 
     res.clearCookie("accessToken", {
@@ -92,78 +105,80 @@ export const logout = async (req, res) => {
       secure: true, // match what you used while setting it
     });
 
-    res.status(200).json(new ApiResponse(200,{}, "Logout successful"));
+    res.status(200).json(new ApiResponse(200, {}, "Logout successful"));
   } catch (error) {
-    res.status(500).json(new ApiResponse(500, {},`Logout Failed: ${error.message}`));
+    res
+      .status(500)
+      .json(new ApiResponse(500, {}, `Logout Failed: ${error.message}`));
   }
 };
 
+export const updateUser = async (req, res) => {
+  // So in this controller we'll only give the authority to the admin to update the skills and role
+  const { skills = [], role, email } = req.body;
 
-
-export const updateUser = async(req, res) => {
-
-    // So in this controller we'll only give the authority to the admin to update the skills and role
-    const { skills = [], role , email} = req.body
-
-    try {
-        // Only admin and moderator can update their skills and profiles
-        if(req.user?.role !== "admin"){
-            return res.status(401).json(new ApiResponse(401,{},"Forbidden"))
-        }
-        
-        const user = await User.findOne({email})
-        if(!user) return res.status(404).status(new ApiResponse(404, {}, "User not found"))
-
-        await User.updateOne(
-            {email},
-            {role , skills : skills.length ? skills : user.skills}
-        )
-
-        res.status(200).json(new ApiResponse(200,{},"User updated successfully"))
-
-    } catch (error) {
-        res.status(500).json(new ApiResponse(500,{},`Update Failed: ${error.message}`))
+  try {
+    // Only admin and moderator can update their skills and profiles
+    if (req.user?.role !== "admin") {
+      return res.status(401).json(new ApiResponse(401, {}, "Forbidden"));
     }
-}
 
-export const getUsers = async(req, res) => {
-    try {
-        // Here in this function i will only give access to the admin and moderator to get all the users
-        if(req.user?.role !== 'admin'){
-            return res.status(403).json(new ApiResponse(403,{},"Forbidden"))
-        }
+    const user = await User.findOne({ email });
+    if (!user)
+      return res.status(404).status(new ApiResponse(404, {}, "User not found"));
 
-        const users = await User.find().select("-password")
-        res.status(200)
-        .json(new ApiResponse(200,users,"Users fetched successfully"))
+    await User.updateOne(
+      { email },
+      { role, skills: skills.length ? skills : user.skills }
+    );
 
-    } catch (error) {
-        res.status(500).json(new ApiResponse(500,{},`Failed to get Users: ${error.message}`))
+    res.status(200).json(new ApiResponse(200, {}, "User updated successfully"));
+  } catch (error) {
+    res
+      .status(500)
+      .json(new ApiResponse(500, {}, `Update Failed: ${error.message}`));
+  }
+};
+
+export const getUsers = async (req, res) => {
+  try {
+    // Here in this function i will only give access to the admin and moderator to get all the users
+    if (req.user?.role !== "admin") {
+      return res.status(403).json(new ApiResponse(403, {}, "Forbidden"));
     }
-}
 
+    const users = await User.find().select("-password");
+    res
+      .status(200)
+      .json(new ApiResponse(200, users, "Users fetched successfully"));
+  } catch (error) {
+    res
+      .status(500)
+      .json(new ApiResponse(500, {}, `Failed to get Users: ${error.message}`));
+  }
+};
 
 // controller for searching the user on the basis of their email
-export const searchUser = async(req, res) => {
+export const searchUser = async (req, res) => {
   try {
-    const {email} = req.params
-    const users = await User.find(
-      {
-        email : {   
-            $regex : email,
-            $options : 'i'
-        }
-      }
-    ).select("email role skills")
-    if(!users) return res.status(404).json(new ApiResponse(404,{},"No user found"))
+    const { email } = req.params;
+    const users = await User.find({
+      email: {
+        $regex: email,
+        $options: "i",
+      },
+    }).select("email role skills");
+    if (!users)
+      return res.status(404).json(new ApiResponse(404, {}, "No user found"));
 
-    return res.status(200).json(new ApiResponse(200,users,"Users found"))
+    return res.status(200).json(new ApiResponse(200, users, "Users found"));
   } catch (error) {
-    return res.status(500).json(new ApiResponse(500,{},"Failed to fetch the user's data"))
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Failed to fetch the user's data"));
   }
-}
+};
 
-
-export const authenticateUser = async(req, res) => {
-  return res.status(200).json({authenticated : true, user : req.user})
-} 
+export const authenticateUser = async (req, res) => {
+  return res.status(200).json({ authenticated: true, user: req.user });
+};
