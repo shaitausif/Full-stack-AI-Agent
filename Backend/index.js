@@ -36,7 +36,9 @@ app.use("/api/tickets", ticketRouter)
 
 
 // Api route for inngest
-app.use("/api/inngest", serve({client : inngest, functions : [onUserSignUp, onTicketCreated]}))
+app.use("/api/inngest", serve({client : inngest, functions : [onUserSignUp, onTicketCreated],
+  signingKey : process.env.INNGEST_SIGNING_KEY // It's necessary to use it here after pushing the app in production
+}))
 
 
 // Connecting the backend with the database
