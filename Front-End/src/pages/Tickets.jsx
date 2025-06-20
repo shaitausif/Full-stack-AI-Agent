@@ -161,7 +161,7 @@ const Tickets = () => {
           </div>
           <div className="md:h-[40vh] h-[50vh] overflow-y-auto">
             {
-              Tickets.length > 0 ? (
+              Tickets?.length > 0 ? (
                 Tickets.map((ticket) => (
               <div onClick={() => {navigate(`/ticket/${ticket._id}`)}}
                 key={ticket._id}
