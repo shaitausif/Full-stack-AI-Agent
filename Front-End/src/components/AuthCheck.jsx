@@ -45,7 +45,7 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
   };
     checkAuth();
     
-  },[navigate, protectedRoute])
+  },[navigate])
 
   if(loading){
     return <div className='flex justify-center items-center min-h-screen'>
