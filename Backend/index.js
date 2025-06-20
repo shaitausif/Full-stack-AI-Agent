@@ -17,8 +17,9 @@ dotenv.config()
 // ];
 
 app.use(cors({
-  origin: "https://ticket-ai-two.vercel.app", // Must match your frontend origin
-  credentials: true
+  origin: "https://ticket-ai-two.vercel.app/login", // Must match your frontend origin
+  credentials: true,
+
 }));
 
 
