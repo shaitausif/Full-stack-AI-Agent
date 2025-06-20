@@ -18,8 +18,10 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
     try {
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/me`, {method : 'GET', credentials : 'include'})
       const data = await res.json();
+      console.log(data)
       if(data.authenticated){
         // Authenticated
+        console.log("User is authenticated")
         dispatch(setuserData(data.user))
         if(!protectedRoute){
           navigate("/")
@@ -28,6 +30,7 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
         }
       }else{
         // Not Authenticated
+        console.log("User is not authenticated")
         if(protectedRoute){
           
           navigate("/login")
