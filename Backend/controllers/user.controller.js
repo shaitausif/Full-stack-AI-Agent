@@ -33,13 +33,17 @@ export const signUp = async (req, res) => {
 
     const token = jwt.sign(
       { _id: user._id, role: user.role, email: user.email },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      {
+        expiresIn : '7d'
+      }
     );
 
     const options = {
       httpOnly: true,
       secure: true, // MUST be true on production with HTTPS
       sameSite: "None", // VERY IMPORTANT for cross-site cookies
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     };
 
     res
@@ -72,14 +76,18 @@ export const login = async (req, res) => {
 
     const token = jwt.sign(
       { _id: user._id, role: user.role, email: user.email },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET,
+      {
+        expiresIn : '7d'
+      }
     );
     // Here, for this application I am verifying the user only with the single token which is the access token
     // so to make the cookie unmodifiable from the front-end we use few options
-    const options = {
+   const options = {
       httpOnly: true,
       secure: true, // MUST be true on production with HTTPS
       sameSite: "None", // VERY IMPORTANT for cross-site cookies
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     };
     res
       .status(200)
