@@ -28,7 +28,7 @@ const Admin = () => {
         return;
       }
 
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/search/${debouncedSearch}`);
+      const res = await fetch(`/api/auth/search/${debouncedSearch}`);
       const data = await res.json();
 
       if (data.success) {
@@ -48,7 +48,7 @@ const Admin = () => {
   const fetchUsers = async () => {
     try {
       setfetchLoading(true);
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/users`, {
+      const res = await fetch(`/api/auth/users`, {
         method: "GET",
         credentials: "include",
       });
@@ -78,7 +78,7 @@ const Admin = () => {
       const arr = dataa.skills?.split(",");
       const dataaa = { role: dataa.role, skills: arr, email: email };
       console.log(dataaa);
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/update-user`, {
+      const res = await fetch(`/api/auth/update-user`, {
         method: "POST",
         credentials: "include",
         headers: {

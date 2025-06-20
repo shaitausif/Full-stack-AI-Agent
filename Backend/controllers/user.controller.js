@@ -88,6 +88,7 @@ export const login = async (req, res) => {
       secure: true, // MUST be true on production with HTTPS
       sameSite: "None", // VERY IMPORTANT for cross-site cookies
       maxAge: 7 * 24 * 60 * 60 * 1000,
+      domain : '.vercel.app'
     };
     res
       .status(200)

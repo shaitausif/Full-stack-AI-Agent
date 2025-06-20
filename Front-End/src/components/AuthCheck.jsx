@@ -16,7 +16,7 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
 
      const checkAuth = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/me`, {method : 'GET', credentials : 'include'})
+      const res = await fetch(`/api/auth/me`, {method : 'GET', credentials : 'include'})
       const data = await res.json();
       console.log(data)
       if(data.authenticated){
