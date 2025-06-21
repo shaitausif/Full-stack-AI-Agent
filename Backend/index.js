@@ -17,8 +17,8 @@ dotenv.config()
 // ];
 
 app.use(cors({
-  origin: "https://ticket-ai-two.vercel.app", // Must match your frontend origin
-  credentials: true
+  origin: `${process.env.NODE_ENV === 'production' ? 'http://front-end.vercel.app' : 'http://localhost:5173'}`, // Must match your frontend origin
+  credentials : true,
 }));
 
 
