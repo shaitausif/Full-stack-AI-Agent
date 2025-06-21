@@ -27,7 +27,7 @@ const Tickets = () => {
   const fetchTickets = async () => {
     try {
       setfetchLoading(true);
-      const res = await fetch(`/api/tickets/`, {
+      const res = await fetch(`${import.meta.env.NODE_ENV === 'production' ? `${import.meta.env.VITE_BACKEND_URL}/api/tickets` : '/api/tickets' }`, {
         method: "GET",
         credentials: "include",
       });
@@ -47,7 +47,7 @@ const Tickets = () => {
   const submitTicket = async (data) => {
     try {
       setloading(true);
-      const res = await fetch(`/api/tickets`, {
+      const res = await fetch(`${import.meta.env.NODE_ENV === 'production' ? `${import.meta.env.VITE_BACKEND_URL}/api/tickets` : '/api/tickets' }`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

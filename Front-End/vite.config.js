@@ -19,5 +19,5 @@ export default defineConfig(({ mode }) => {
     //     },
     //   },
     // },
-  };
+ };  // I commented out this one in production
 });

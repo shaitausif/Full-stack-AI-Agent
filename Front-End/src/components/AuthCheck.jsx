@@ -15,9 +15,10 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
   useEffect(() => {
 
      const checkAuth = async () => {
+      let data;
     try {
-      const res = await fetch(`/api/auth/me`, {method : 'GET', credentials : 'include'})
-      const data = await res.json();
+      const res = await fetch(`${import.meta.env.NODE_ENV === 'production' ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/me` : `/api/auth/me`}`, {method : 'GET', credentials : 'include'})
+      data = await res.json();
       console.log(data)
       if(data.authenticated){
         // Authenticated
@@ -48,7 +49,7 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
   };
     checkAuth();
     
-  },[])
+  },[navigate, protectedRoute])
 
   if(loading){
     return <div className='flex justify-center items-center min-h-screen'>
