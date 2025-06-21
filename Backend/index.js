@@ -16,10 +16,15 @@ dotenv.config()
 //   "https://ticket-ai-two.vercel.app"
 // ];
 
-app.use(cors({
-  origin: "https://ticket-ai-two.vercel.app", // Must match your frontend origin
-  credentials: true
-}));
+app.use(express.static('dist'))
+
+// Conditionally apply CORS only for development (if needed for testing API directly, etc.)
+if (process.env.NODE_ENV === 'development') {
+  app.use(cors({
+    origin: 'http://localhost:5173', // Your local Vite dev server
+    credentials: true
+  }));
+}
 
 
 // to accept the json request

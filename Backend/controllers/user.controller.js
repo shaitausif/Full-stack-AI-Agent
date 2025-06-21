@@ -42,7 +42,7 @@ export const signUp = async (req, res) => {
     const options = {
       httpOnly: true,
       secure: true, // MUST be true on production with HTTPS
-      sameSite: "None", // VERY IMPORTANT for cross-site cookies
+      sameSite: "Lax", // VERY IMPORTANT for cross-site cookies
       maxAge: 7 * 24 * 60 * 60 * 1000,
     };
 
@@ -86,9 +86,8 @@ export const login = async (req, res) => {
    const options = {
       httpOnly: true,
       secure: true, // MUST be true on production with HTTPS
-      sameSite: "None", // VERY IMPORTANT for cross-site cookies
+      sameSite: "Lax", // VERY IMPORTANT for cross-site cookies
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      domain : '.vercel.app'
     };
     res
       .status(200)
@@ -114,7 +113,7 @@ export const logout = async (req, res) => {
     res.clearCookie("accessToken", {
       httpOnly: true,
       secure: true, // match what you used while setting it
-      sameSite : "None"
+      sameSite : "Lax"
     });
 
     res.status(200).json(new ApiResponse(200, {}, "Logout successful"));
