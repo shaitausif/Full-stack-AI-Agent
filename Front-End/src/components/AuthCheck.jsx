@@ -16,12 +16,12 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
 
      const checkAuth = async () => {
     try {
-      const res = await fetch(`/api/auth/me`, {method : 'GET', credentials : 'include'})
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/me`, {method : 'GET', credentials : 'include'})
       const data = await res.json();
       console.log(data)
       if(data.authenticated){
         // Authenticated
-        console.log("User is authenticated")
+        console.log("User is authenticated")  
         dispatch(setuserData(data.user))
         if(!protectedRoute){
           navigate("/")
@@ -48,7 +48,7 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
   };
     checkAuth();
     
-  },[])
+  },[navigate, protectedRoute])
 
   if(loading){
     return <div className='flex justify-center items-center min-h-screen'>

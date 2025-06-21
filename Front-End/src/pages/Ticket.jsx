@@ -16,7 +16,7 @@ const Ticket = () => {
   const fetchTicketDetails = async() => {
     try {
       setloading(true)
-      const res = await fetch(`/api/tickets/${id}`)
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/tickets/${id}`)
     const data = await res.json()
     if(res.ok){
       setticketData(data.data)
