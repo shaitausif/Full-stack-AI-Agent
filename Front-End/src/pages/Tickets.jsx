@@ -84,7 +84,7 @@ const Tickets = () => {
   return (
     <>
       <div className="flex w-full min-h-screen flex-col gap-6 items-center mx-auto">
-        <div className="md:w-[50vw] mx-4 md:mx-auto">
+        <div className="md:w-[50vw] w-[90%] mx-4 md:mx-auto">
           <h2 className="text-lg md:text-2xl py-3 md:py-6 md:text-start text-center">Create Ticket</h2>
 
           <form onSubmit={handleSubmit(submitTicket)}>
