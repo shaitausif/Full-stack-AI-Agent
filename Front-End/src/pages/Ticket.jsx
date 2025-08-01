@@ -20,7 +20,6 @@ const Ticket = () => {
     const data = await res.json()
     if(res.ok){
       setticketData(data.data)
-      console.log(data.data)
     }else{
       toast.warn(data.message, { closeOnClick: true, autoClose: 3000, transition: Bounce });
       navigate('/')

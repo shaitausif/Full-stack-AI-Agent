@@ -15,7 +15,6 @@ const Tickets = () => {
 
   const navigate = useNavigate();
   const {user} = useSelector((state) => state.data)
-  console.log(user)
 
   // In your Tickets component
 
