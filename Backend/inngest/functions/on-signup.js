@@ -1,7 +1,7 @@
 import {inngest} from '../client.js'
 import User from '../../models/user.model.js'
 import { NonRetriableError } from 'inngest'
-import { sendMail } from '../../utils/mailer.js'
+// import { sendRegistrationEmail } from '../../helpers/sendRegistrationEmail.js'
 
 export const onUserSignUp = inngest.createFunction(
     // The ID of this function
@@ -24,14 +24,14 @@ export const onUserSignUp = inngest.createFunction(
 
             // The steps in the inngest works same like promises means whatever we return in the step 1 goes directly to step 2
 
-                await step.run("send-welcome-email",async() => {
-                    const subject = "Welcome to the App"
-                    const message = `Hi,
-                    \n\n
-                    Thanks for signing up, We're glad to have you onboard!`
+                // await step.run("send-welcome-email",async() => {
+                //     const subject = "Welcome to the App"
+                //     const message = `Hi,
+                //     \n\n
+                //     Thanks for signing up, We're glad to have you onboard!`
 
-                    await sendMail(user.email,subject, message)
-                })
+                //     await sendRegistrationEmail(user.email)
+                // })
 
                 return {success : true}
                 

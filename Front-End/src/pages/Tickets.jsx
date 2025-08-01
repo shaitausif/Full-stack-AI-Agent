@@ -4,16 +4,34 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { Bounce } from "react-toastify";
 import { RefreshCcw } from "lucide-react";
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const Tickets = () => {
   const [Tickets, setTickets] = useState([]);
   const [fetchLoading, setfetchLoading] = useState(false);
   const [loading, setloading] = useState(false);
+  const [searchID, setsearchID] = useState("")
+  const [onlyAssignedTickets, setonlyAssignedTickets] = useState(false)
 
-  const dispatch = useDispatch()
   const navigate = useNavigate();
+  const {user} = useSelector((state) => state.data)
+  console.log(user)
 
+  // In your Tickets component
+
+// 1. A useEffect to READ from localStorage ONCE on mount
+useEffect(() => {
+  const storedValue = localStorage.getItem("assigned");
+  // localStorage stores strings, so compare to "true"
+  if (storedValue === "true") {
+    setonlyAssignedTickets(true);
+  }
+}, []); // Empty array `[]` means this runs only on mount
+
+// 2. A useEffect to WRITE to localStorage whenever the state changes
+useEffect(() => {
+  localStorage.setItem("assigned", onlyAssignedTickets);
+}, [onlyAssignedTickets]); // This runs whenever `onlyAssignedTickets` changes
 
   const {
     register,
@@ -33,6 +51,9 @@ const Tickets = () => {
       });
       const data = await res.json();
       setTickets(data.data);
+     setTimeout(() => {
+       console.log(data.data)
+     }, 3000);
     } catch (error) {
       console.log("Unable to fetch the ticket data");
     } finally {
@@ -42,6 +63,7 @@ const Tickets = () => {
 
   useEffect(() => {
     fetchTickets();
+    
   }, []);
 
   const submitTicket = async (data) => {
@@ -149,21 +171,51 @@ const Tickets = () => {
           </form>
           {/* <div className='w-full h-[1px] bg-gray-500 hover:bg-gray-400 my-8 shadow-2xl rounded-full'></div> */}
           {/* show all the tickets */}
-          <div className="mt-5 mb-2 flex justify-between">
-            <h2 className="text-lg md:text-xl">All Tickets</h2>
+          <div className="mt-5 mb-2 flex items-center justify-between">
+            <h2 className="text-lg md:text-xl items-center gap-5 flex">
+              <p>All Tickets</p>
+              <div className="flex gap-2 justify-center items-center">
+                <input checked={onlyAssignedTickets}  onChange={() => {
+                  setonlyAssignedTickets((prev) => !prev)
+                }} type="checkbox" value="synthwave" className="toggle theme-controller" />
+              <p className={`text-base ${onlyAssignedTickets ? "text-gray-300" : "text-gray-400"}`}>Only Assigned</p>
+              </div>
+            </h2>
+                  
+               
             {fetchLoading ? (
               <span className="loading loading-spinner loading-sm md:loading-lg"></span>
             ) : (
-              <div onClick={() => fetchTickets()}>
-                <RefreshCcw />
+              <div className="flex gap-2 justify-center items-center w-fit">
+               <input placeholder="Enter Ticket ID"
+
+                className="w-full outline-none border border-gray-600 shadow-lg transition-all duration-500 focus:border-gray-400 rounded-md px-2 md:text-base text-sm"
+                
+                type="text" onChange={(e) => {
+                  setsearchID(e.target.value)
+
+                }} />
+                <RefreshCcw onClick={() => fetchTickets()}/>
               </div>
             )}
           </div>
           <div className="md:h-[40vh] h-[50vh] overflow-y-auto">
             {
-              Tickets?.length > 0 ? (
-                Tickets.map((ticket) => (
-              <div onClick={() => {navigate(`/ticket/${ticket._id}`)}}
+          
+                Tickets?.length > 0 ? (                
+                Tickets.filter((ticket) => searchID.trim() == "" ?  true : ticket._id.toString().includes(searchID.trim()))
+                .filter((ticket) => {
+                    // If the box is not checked, show all tickets
+  if (!onlyAssignedTickets) {
+    return true;
+  }
+  // If the box IS checked, only filter if the user exists
+  // and the assignedTo ID matches the user's ID.
+  return user && ticket.assignedTo?._id === user._id;
+                })
+                .map((ticket) => (
+              <div onClick={() => {
+                navigate(`/ticket/${ticket._id}`)}}
                 key={ticket._id}
                 className="tickets border border-[#1A2433] duration-300 hover:border-gray-400 flex flex-col gap-1 bg-[#1A2433] w-full h-fit rounded-lg py-2 px-3 md:px-4 my-2 md:my-3"
               >
@@ -172,8 +224,9 @@ const Tickets = () => {
                 </div>
                 <div className="text-sm">
                   <p>{ticket.description}</p>
+                  <p className="text-[13px] text-gray-400 pt-0.5">Ticket ID : {ticket._id}</p>
                 </div>
-                <div className="text-[12px] text-gray-400 mt-1">
+                <div className="text-[12px] text-gray-400">
                   <p>
                     
                     {new Date(ticket.createdAt).toLocaleString("en-US", {
@@ -191,6 +244,7 @@ const Tickets = () => {
               ) : (<div className="flex justify-center w-full">
                 <h3 className="text-[15px]">No Tickets to display</h3>
               </div>)
+              
             }
           </div>
         </div>

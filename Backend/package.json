@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start" : "node index.js",
+    "start": "node index.js",
     "dev": "nodemon index.js",
     "inngest-dev": "npx inngest-cli@latest dev"
   },
@@ -13,7 +13,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "@react-email/render": "^1.1.4",
+    "nodemon": "^3.1.10",
+    "react": "^19.1.1"
   },
   "dependencies": {
     "@inngest/agent-kit": "^0.8.0",
@@ -25,6 +27,8 @@
     "inngest": "^3.38.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.15.1",
-    "nodemailer": "^7.0.3"
+    "nodemailer": "^7.0.3",
+    "react-email": "^4.2.6",
+    "resend": "^4.7.0"
   }
 }

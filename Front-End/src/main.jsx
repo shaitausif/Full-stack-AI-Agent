@@ -9,14 +9,17 @@ import Login from "./pages/Login.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Admin from "./pages/Admin.jsx";
 import { Provider } from 'react-redux';
-import { store } from './store/Store';
+import {  store } from './store/Store';
 import { ToastContainer } from "react-toastify";
 import { Bounce } from "react-toastify";
 import Navbar from "./components/Navbar.jsx";
+import Cursor from "./components/Cursor.jsx";
+
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
+      <Cursor/>
     <ToastContainer
       position="top-right"
       autoClose={5000}
@@ -77,6 +80,7 @@ createRoot(document.getElementById("root")).render(
         />
       </Routes>
     </BrowserRouter>
+
     </Provider>
   </StrictMode>
 );

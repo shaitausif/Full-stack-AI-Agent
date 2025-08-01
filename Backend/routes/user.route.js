@@ -18,4 +18,4 @@ router.route("/search/:email").get(searchUser)
 // Send the user authentication authority to the front-end
 router.route("/me").get(authenticate, authenticateUser)
 
-export default router
+export default router   

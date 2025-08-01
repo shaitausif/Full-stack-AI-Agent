@@ -3,7 +3,6 @@ import Ticket from "../../models/ticket.model.js";
 import { NonRetriableError } from "inngest";
 import { analyzeTicket } from "../../utils/ai-agent.js";
 import User from "../../models/user.model.js";
-import { sendMail } from "../../utils/mailer.js";
 
 
 // Here in this function I am building an AI Agent pipeline for tickets
@@ -72,14 +71,12 @@ export const onTicketCreated = inngest.createFunction(
                 return user
             })
 
-            await step.run("send-email-notification", async() => {
-                if(moderator){
-                    const finalTicket = await Ticket.findById(ticket._id)
-                    await sendMail(moderator.email, "Ticket Assigned", `A new ticket is assigned to you ${finalTicket.title} 
-                        ${finalTicket.description}
-                        `)
-                }
-            })
+            // await step.run("send-email-notification", async() => {
+            //     if(moderator){
+            //         const finalTicket = await Ticket.findById(ticket._id)
+            //         await sendTicketEmail(moderator.email, finalTicket._id)
+            //     }
+            // })
             
 
             return {success : true}

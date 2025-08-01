@@ -19,7 +19,6 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
     try {
       const res = await fetch(`${import.meta.env.NODE_ENV === 'production' ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/me` : `/api/auth/me`}`, {method : 'GET', credentials : 'include'})
       data = await res.json();
-      console.log(data)
       if(data.authenticated){
         // Authenticated
         console.log("User is authenticated")
