@@ -171,13 +171,13 @@ useEffect(() => {
           {/* <div className='w-full h-[1px] bg-gray-500 hover:bg-gray-400 my-8 shadow-2xl rounded-full'></div> */}
           {/* show all the tickets */}
           <div className="mt-5 mb-2 flex items-center justify-between">
-            <h2 className="text-lg md:text-xl items-center gap-5 flex">
+            <h2 className="text-md md:text-xl gap-2 md:flex-row flex-col items-start md:gap-5 flex">
               <p>All Tickets</p>
               <div className="flex gap-2 justify-center items-center">
                 <input checked={onlyAssignedTickets}  onChange={() => {
                   setonlyAssignedTickets((prev) => !prev)
                 }} type="checkbox" value="synthwave" className="toggle theme-controller" />
-              <p className={`text-base ${onlyAssignedTickets ? "text-gray-300" : "text-gray-400"}`}>Only Assigned</p>
+              <p className={`text-[12px] md:text-base ${onlyAssignedTickets ? "text-gray-300" : "text-gray-400"}`}>Only Assigned</p>
               </div>
             </h2>
                   
