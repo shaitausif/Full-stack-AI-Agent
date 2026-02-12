@@ -8,6 +8,10 @@ import Tickets from "./pages/Tickets.jsx";
 import Login from "./pages/Login.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import Admin from "./pages/Admin.jsx";
+import Profile from "./pages/Profile.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import VerifyOtp from "./pages/VerifyOtp.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 import { Provider } from 'react-redux';
 import {  store } from './store/Store';
 import { ToastContainer } from "react-toastify";
@@ -19,7 +23,7 @@ import Cursor from "./components/Cursor.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
-      <Cursor/>
+      {/* <Cursor/> */}
     <ToastContainer
       position="top-right"
       autoClose={5000}
@@ -30,7 +34,7 @@ createRoot(document.getElementById("root")).render(
       pauseOnFocusLoss
       draggable
       pauseOnHover
-      theme="light"
+      theme="dark"
       transition={Bounce}
     />
     <BrowserRouter>
@@ -70,11 +74,44 @@ createRoot(document.getElementById("root")).render(
           }
         />
         <Route
+          path="/forgot-password"
+          element={
+            <AuthCheck protected={false}>
+              <ForgotPassword />
+            </AuthCheck>
+          }
+        />
+        <Route
+          path="/verify-otp"
+          element={
+            <AuthCheck protected={false}>
+              <VerifyOtp />
+            </AuthCheck>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <AuthCheck protected={false}>
+              <ResetPassword />
+            </AuthCheck>
+          }
+        />
+        <Route
           path="/admin"
           element={
             <AuthCheck protected={true}>
               <Navbar/>
               <Admin />
+            </AuthCheck>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <AuthCheck protected={true}>
+              <Navbar/>
+              <Profile />
             </AuthCheck>
           }
         />

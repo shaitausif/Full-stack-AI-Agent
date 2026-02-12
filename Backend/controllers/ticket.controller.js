@@ -28,19 +28,26 @@ export const createTicket = async(req, res) => {
 
 
 
-// Get all the tickets will only be allowed to admin and moderator
+// Get all the tickets
+// Admin gets all tickets, normal user gets tickets they created or are assigned to
 export const getTickets = async(req, res) => {
     try {
         let tickets = []
-        if(req.user?.role !== "user"){
+        if(req.user?.role === "admin"){
             tickets = await Ticket.find()
-            .populate("assignedTo", ["email", "_id"])
+            .populate("createdBy", ["_id", "name", "email"])
+            .populate("assignedTo", ["_id", "name", "email"])
             .sort({createdAt : -1})
         }else{
-            // And the user can only see the tickets createdby himself
-            tickets = await Ticket.find({createdBy : req.user._id })
-            .populate("assignedTo", ["email", "_id"])
-            .select("title description status createdAt")
+            // User can see tickets they created or are assigned to
+            tickets = await Ticket.find({
+                $or : [
+                    { createdBy : req.user._id },
+                    { assignedTo : req.user._id }
+                ]
+            })
+            .populate("createdBy", ["_id", "name", "email"])
+            .populate("assignedTo", ["_id", "name", "email"])
             .sort({createdAt : -1})
         }
 
@@ -50,6 +57,33 @@ export const getTickets = async(req, res) => {
     } catch (error) {
         return res.status(500)
         .json(new ApiResponse(500,{},`Failed to get tickets: ${error.message}`))
+    }
+}
+
+
+// Delete a ticket
+// Only admin or the ticket creator can delete
+export const deleteTicket = async(req, res) => {
+    try {
+        const ticket = await Ticket.findById(req.params.id)
+
+        if(!ticket) return res.status(404).json(new ApiResponse(404,{},"Ticket not found"))
+
+        const isAdmin = req.user?.role === "admin"
+        const isCreator = ticket.createdBy.toString() === req.user._id.toString()
+
+        if(!isAdmin && !isCreator){
+            return res.status(403).json(new ApiResponse(403,{},"You are not authorized to delete this ticket"))
+        }
+
+        await Ticket.findByIdAndDelete(req.params.id)
+
+        return res.status(200)
+        .json(new ApiResponse(200,{},"Ticket deleted successfully"))
+
+    } catch (error) {
+        return res.status(500)
+        .json(new ApiResponse(500,{},`Error in deleting the ticket ${error.message}`))
     }
 }
 

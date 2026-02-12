@@ -1,8 +1,11 @@
 import bcrypt from "bcrypt";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import User from "../models/user.model.js";
+import Ticket from "../models/ticket.model.js";
 import { inngest } from "../inngest/client.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
+import { sendForgotPasswordEmail } from "../helpers/sendForgotPasswordEmail.js";
 
 // I am actually not using those wrapper function asyncHandler as i had used it in one of my backend project so here instead of it i will use trycatch everywhere
 export const signUp = async (req, res) => {
@@ -40,10 +43,10 @@ export const signUp = async (req, res) => {
     );
 
     const options = {
-      httpOnly: true,
-      secure: true, // MUST be true on production with HTTPS
-      sameSite: "Lax", // VERY IMPORTANT for cross-site cookies
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      httpOnly: false,
+      secure: true,
+      maxAge: 3600000 * 24 * 7,
+      sameSite: "none",
     };
 
     res
@@ -83,11 +86,11 @@ export const login = async (req, res) => {
     );
     // Here, for this application I am verifying the user only with the single token which is the access token
     // so to make the cookie unmodifiable from the front-end we use few options
-   const options = {
-      httpOnly: true,
-      secure: true, // MUST be true on production with HTTPS
-      sameSite: "Lax", // VERY IMPORTANT for cross-site cookies
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+    const options = {
+      httpOnly: false,
+      secure: true,
+      maxAge: 3600000 * 24 * 7,
+      sameSite: "none",
     };
     res
       .status(200)
@@ -111,9 +114,9 @@ export const logout = async (req, res) => {
     }
 
     res.clearCookie("accessToken", {
-      httpOnly: true,
-      secure: true, // match what you used while setting it
-      sameSite : "Lax"
+      httpOnly: false,
+      secure: true,
+      sameSite: "none",
     });
 
     res.status(200).json(new ApiResponse(200, {}, "Logout successful"));
@@ -192,4 +195,237 @@ export const searchUser = async (req, res) => {
 
 export const authenticateUser = async (req, res) => {
   return res.status(200).json({ authenticated: true, user: req.user });
+};
+
+// Get the logged-in user's profile along with ticket stats
+export const getProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    if (!user)
+      return res.status(404).json(new ApiResponse(404, {}, "User not found"));
+
+    const [created, assigned, closed] = await Promise.all([
+      Ticket.countDocuments({ createdBy: req.user._id }),
+      Ticket.countDocuments({ assignedTo: req.user._id }),
+      Ticket.countDocuments({ createdBy: req.user._id, status: "closed" }),
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      data: user,
+      stats: { created, assigned, closed },
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, `Failed to fetch profile: ${error.message}`));
+  }
+};
+
+// Update the logged-in user's profile (name, phone, location, bio only)
+export const updateProfile = async (req, res) => {
+  try {
+    const { name, phone, location, bio } = req.body;
+
+    // Validation
+    if (name && name.length > 50)
+      return res.status(400).json({ success: false, message: "Name must be 50 characters or less" });
+    if (phone && phone.length > 20)
+      return res.status(400).json({ success: false, message: "Phone must be 20 characters or less" });
+    if (location && location.length > 100)
+      return res.status(400).json({ success: false, message: "Location must be 100 characters or less" });
+    if (bio && bio.length > 300)
+      return res.status(400).json({ success: false, message: "Bio must be 300 characters or less" });
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user._id,
+      {
+        ...(name !== undefined && { name }),
+        ...(phone !== undefined && { phone }),
+        ...(location !== undefined && { location }),
+        ...(bio !== undefined && { bio }),
+      },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!updatedUser)
+      return res.status(404).json(new ApiResponse(404, {}, "User not found"));
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile updated successfully",
+      data: updatedUser,
+    });
+  } catch (error) {
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, `Failed to update profile: ${error.message}`));
+  }
+};
+
+// Forgot password - sends OTP to email
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Email is required"));
+    }
+
+    const genericMessage =
+      "If an account with that email exists, a password reset OTP has been sent.";
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(200).json(new ApiResponse(200, {}, genericMessage));
+    }
+
+    // Generate a 6-digit OTP
+    const otp = crypto.randomInt(100000, 999999).toString();
+
+    // Hash the OTP before storing
+    const hashedOtp = crypto
+      .createHash("sha256")
+      .update(otp)
+      .digest("hex");
+
+    // Store hashed OTP and expiry (10 minutes)
+    user.resetOtp = hashedOtp;
+    user.resetOtpExpiry = Date.now() + 10 * 60 * 1000; // 10 minutes
+    user.isOtpVerified = false;
+    await user.save();
+
+    // Send OTP via email
+    const userName = user.name || user.email.split("@")[0];
+    await sendForgotPasswordEmail(user.email, userName, otp);
+
+    return res.status(200).json(new ApiResponse(200, {}, genericMessage));
+  } catch (error) {
+    console.error("Forgot password error:", error.message);
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Something went wrong. Please try again later."));
+  }
+};
+
+// Verify OTP
+export const verifyOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Email and OTP are required"));
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user || !user.resetOtp || !user.resetOtpExpiry) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Invalid or expired OTP"));
+    }
+
+    // Check if OTP has expired
+    if (Date.now() > user.resetOtpExpiry) {
+      user.resetOtp = null;
+      user.resetOtpExpiry = null;
+      user.isOtpVerified = false;
+      await user.save();
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "OTP has expired. Please request a new one."));
+    }
+
+    // Hash the provided OTP and compare
+    const hashedOtp = crypto
+      .createHash("sha256")
+      .update(otp)
+      .digest("hex");
+
+    if (hashedOtp !== user.resetOtp) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Invalid OTP"));
+    }
+
+    // Mark OTP as verified (allow password reset)
+    user.isOtpVerified = true;
+    await user.save();
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "OTP verified successfully. You can now reset your password."));
+  } catch (error) {
+    console.error("Verify OTP error:", error.message);
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Something went wrong. Please try again later."));
+  }
+};
+
+// Reset password (after OTP verification)
+export const resetPassword = async (req, res) => {
+  try {
+    const { email, newPassword } = req.body;
+
+    if (!email || !newPassword) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Email and new password are required"));
+    }
+
+    if (newPassword.length < 6) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Password must be at least 6 characters"));
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Invalid request"));
+    }
+
+    // Ensure OTP was verified before allowing password reset
+    if (!user.isOtpVerified) {
+      return res
+        .status(403)
+        .json(new ApiResponse(403, {}, "OTP not verified. Please verify your OTP first."));
+    }
+
+    // Check if OTP session is still valid (hasn't expired since verification)
+    if (!user.resetOtpExpiry || Date.now() > user.resetOtpExpiry.getTime() + 5 * 60 * 1000) {
+      user.resetOtp = null;
+      user.resetOtpExpiry = null;
+      user.isOtpVerified = false;
+      await user.save();
+      return res
+        .status(400)
+        .json(new ApiResponse(400, {}, "Session expired. Please request a new OTP."));
+    }
+
+    // Hash new password and save
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.resetOtp = null;
+    user.resetOtpExpiry = null;
+    user.isOtpVerified = false;
+    await user.save();
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, {}, "Password reset successfully. You can now login with your new password."));
+  } catch (error) {
+    console.error("Reset password error:", error.message);
+    return res
+      .status(500)
+      .json(new ApiResponse(500, {}, "Something went wrong. Please try again later."));
+  }
 };

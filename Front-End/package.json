@@ -12,6 +12,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
     "@tailwindcss/vite": "^4.1.9",
+    "clsx": "^2.1.1",
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.515.0",
     "motion": "^12.23.12",
@@ -22,6 +23,7 @@
     "react-router-dom": "^7.6.2",
     "react-toastify": "^11.0.5",
     "redux-persist": "^6.0.0",
+    "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.9",
     "usehooks-ts": "^3.1.1"
   },

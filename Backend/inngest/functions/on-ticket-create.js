@@ -43,8 +43,10 @@ export const onTicketCreated = inngest.createFunction(
             })
 
             const moderator = await step.run("assign-moderator",async() => {
+                // Exclude the ticket creator from being assigned
                 let user = await User.findOne(
                     {
+                        _id : { $ne : ticket.createdBy },
                         role : "moderator",
                         skills : {
                             $elemMatch : {

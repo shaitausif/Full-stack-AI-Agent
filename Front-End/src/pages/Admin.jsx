@@ -3,6 +3,18 @@ import { useDebounceCallback } from "usehooks-ts";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { Bounce } from "react-toastify";
+import { motion, AnimatePresence } from "motion/react";
+import {
+  Search,
+  Shield,
+  Users,
+  Pencil,
+  X,
+  Check,
+  Mail,
+  Tag,
+  UserCog,
+} from "lucide-react";
 
 const Admin = () => {
   const [users, setUsers] = useState([]);
@@ -18,7 +30,6 @@ const Admin = () => {
     }));
   };
 
-  // Create debounced callback to update debouncedSearch after delay
   const debounced = useDebounceCallback(setDebouncedSearch, 1000);
 
   const searchUsers = async () => {
@@ -28,13 +39,23 @@ const Admin = () => {
         return;
       }
 
-      const res = await fetch(`${import.meta.env.NODE_ENV === 'production' ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/search/${debouncedSearch}` : `/api/auth/search/${debouncedSearch}` }`);
+      const res = await fetch(
+        `${
+          import.meta.env.NODE_ENV === "production"
+            ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/search/${debouncedSearch}`
+            : `/api/auth/search/${debouncedSearch}`
+        }`
+      );
       const data = await res.json();
 
       if (data.success) {
         setUsers(data.data);
       } else {
-        toast.error(data.message, { closeOnClick: true, autoClose: 3000, transition: Bounce });
+        toast.error(data.message, {
+          closeOnClick: true,
+          autoClose: 3000,
+          transition: Bounce,
+        });
       }
     } catch (error) {
       console.log("Unable to search the User:", error.message);
@@ -48,15 +69,26 @@ const Admin = () => {
   const fetchUsers = async () => {
     try {
       setfetchLoading(true);
-      const res = await fetch(`${import.meta.env.NODE_ENV === 'production' ? `${import.meta.env.VITE_BACKEND_URL}api/auth/users` : '/api/auth/users' }`, {
-        method: "GET",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${
+          import.meta.env.NODE_ENV === "production"
+            ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/users`
+            : "/api/auth/users"
+        }`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       const data = await res.json();
       if (data.success) {
         setUsers(data.data);
       } else {
-        toast.error("Unable to fetch the users", { closeOnClick: true, autoClose: 3000, transition: Bounce });
+        toast.error("Unable to fetch the users", {
+          closeOnClick: true,
+          autoClose: 3000,
+          transition: Bounce,
+        });
       }
     } catch (error) {
       console.log("Unable to fetch users Info: ", error.message);
@@ -64,7 +96,6 @@ const Admin = () => {
       setfetchLoading(false);
     }
   };
-
 
   const {
     register,
@@ -78,124 +109,225 @@ const Admin = () => {
       const arr = dataa.skills?.split(",");
       const dataaa = { role: dataa.role, skills: arr, email: email };
       console.log(dataaa);
-      const res = await fetch(`${import.meta.env.NODE_ENV === 'production' ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/update-user` : '/api/auth/update-user' }`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ...dataaa }),
-      });
+      const res = await fetch(
+        `${
+          import.meta.env.NODE_ENV === "production"
+            ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/update-user`
+            : "/api/auth/update-user"
+        }`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...dataaa }),
+        }
+      );
       const data = await res.json();
       if (data.success) {
         fetchUsers();
       } else {
-        toast.error(data.message, { closeOnClick: true, autoClose: 3000, transition: Bounce });
+        toast.error(data.message, {
+          closeOnClick: true,
+          autoClose: 3000,
+          transition: Bounce,
+        });
       }
     } catch (error) {
       console.log("Unable to update the User", error.message);
     }
   };
 
+  const getRoleBadge = (role) => {
+    const map = {
+      admin: "badge-red",
+      moderator: "badge-yellow",
+      user: "badge-blue",
+    };
+    return map[role] || "badge-blue";
+  };
+
   return (
-    <div className="flex w-full min-h-screen flex-col gap-6 items-center mx-auto py-6">
-      <div className="mx-4 md:mx-auto  md:w-[50vw]">
-        <div className="flex flex-col justify-between gap-3 md:gap-5">
-          <h2 className="md:text-2xl text-md font-semibold">
-            Admin Panel - Manage Users
-          </h2>
-          <input
-            placeholder="Search by Email"
-            className="w-full outline-none border border-gray-600 shadow-lg transition-all duration-500 focus:border-gray-400 rounded-md px-2 py-1 md:text-base text-sm"
-            type="text"
-            required
-            value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              debounced(e.target.value); // debounce API trigger, not UI
-            }}
-          />
-        </div>
-        {/* Users data */}
-        <div className="flex flex-col md:gap-4 gap-2 w-full md:my-5 my-3 rounded-md">
+    <div className="min-h-screen bg-[#0a0f1a] bg-grid">
+      <div className="max-w-4xl mx-auto px-4 md:px-6 py-6 md:py-8">
+        {/* Header */}
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="mb-6"
+        >
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500/20 to-red-500/20 flex items-center justify-center border border-purple-500/20">
+              <Shield className="w-5 h-5 text-purple-400" />
+            </div>
+            <div>
+              <h1 className="text-xl md:text-2xl font-bold">Admin Panel</h1>
+              <p className="text-xs text-gray-500">Manage users and permissions</p>
+            </div>
+            {users.length > 0 && (
+              <span className="badge badge-purple ml-auto">
+                <Users className="w-3 h-3" />
+                {users.length} users
+              </span>
+            )}
+          </div>
+
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+            <input
+              placeholder="Search users by email..."
+              className="input-modern !pl-11 !py-3"
+              type="text"
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                debounced(e.target.value);
+              }}
+            />
+          </div>
+        </motion.div>
+
+        {/* Users List */}
+        <div className="flex flex-col gap-3">
           {fetchLoading ? (
-            <div className="flex justify-center items-center w-full h-[30vh]">
-              <span className="loading loading-spinner loading-sm md:loading-xl"></span>
+            <div className="flex flex-col items-center justify-center py-20">
+              <span className="loading loading-spinner loading-lg text-blue-500"></span>
+              <p className="text-sm text-gray-500 mt-3">Loading users...</p>
             </div>
           ) : (
-            users.map((user) => (
-              <div
-                key={user._id}
-                className="flex flex-col gap-1 md:px-4 border border-[#1A2433] duration-300  hover:border-gray-400 rounded-lg bg-[#1A2433] px-2 md:py-5 py-3"
-              >
-                <form
-                  onSubmit={handleSubmit((data) =>
-                    updateUser(data, user.email)
-                  )}
+            <AnimatePresence>
+              {users.map((user, index) => (
+                <motion.div
+                  key={user._id}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -10, opacity: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                  className="card-modern p-4 md:p-5"
                 >
-                  <h3>
-                    <span className="font-semibold">Email: </span>
-                    {user.email}
-                  </h3>
-
-                  <h3>
-                    <span className="font-semibold">Current Role: </span>
-                    {isEditing[user._id] ? (
-                      <select className="bg-[#1A2433]" {...register("role")}>
-                        <option value="admin">admin</option>
-                        <option value="moderator">moderator</option>
-                        <option value="user">user</option>
-                      </select>
-                    ) : (
-                      user.role
+                  <form
+                    onSubmit={handleSubmit((data) =>
+                      updateUser(data, user.email)
                     )}
-                  </h3>
-                  <h3>
-                    <span className="font-semibold">Skills: </span>
-                    {isEditing[user._id] ? (
-                      <input
-                        className=" outline px-2"
-                        defaultValue={
-                          Array.isArray(user.skills)
-                            ? user.skills.join(", ")  
-                            : user.skills
-                        }
-                        type="text"
-                        {...register("skills")}
-                      />
-                    ) : user.skills.length >= 1 && user.skills[0] !== "" ? (
-                      user.skills
-                    ) : (
-                      "N/A"
-                    )}
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={() => toggleEdit(user._id)}
-                    className={`text-start w-fit cursor-pointe ${
-                      isEditing[user._id]
-                        ? "bg-red-500 hover:bg-red-600"
-                        : "bg-blue-500 hover:bg-blue-600"
-                    } md:px-5 px-4 md:py-2 py-1 hover:bg-blue-600  rounded duration-300 text-white font-semibold mt-2 md:mt-3 mr-3`}
                   >
-                    {isEditing[user._id] ? "Cancel" : "Edit"}
-                  </button>
-                  {isEditing[user._id] && (
-                    <button
-                      type="submit"
-                      onClick={() => {
-                        setTimeout(() => {
-                          toggleEdit(user._id);
-                        }, 100);
-                      }}
-                      className="text-start w-fit cursor-pointer bg-green-600 hover:bg-green-700 md:px-5 px-4 md:py-2 py-1 rounded duration-300 text-white font-semibold mt-2 md:mt-3 "
-                    >
-                      Save
-                    </button>
-                  )}
-                </form>
-              </div>
-            ))
+                    <div className="flex flex-col gap-3">
+                      {/* Email Row */}
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                        <span className="text-sm md:text-base text-gray-200 truncate">
+                          {user.email}
+                        </span>
+                      </div>
+
+                      {/* Role Row */}
+                      <div className="flex items-center gap-2">
+                        <UserCog className="w-4 h-4 text-yellow-400 flex-shrink-0" />
+                        <span className="text-xs text-gray-500 font-medium uppercase tracking-wider mr-1">
+                          Role:
+                        </span>
+                        {isEditing[user._id] ? (
+                          <select
+                            className="input-modern !py-1 !px-2 !text-sm !w-auto !rounded-lg"
+                            {...register("role")}
+                          >
+                            <option value="admin">admin</option>
+                            <option value="moderator">moderator</option>
+                            <option value="user">user</option>
+                          </select>
+                        ) : (
+                          <span className={`badge ${getRoleBadge(user.role)}`}>
+                            {user.role}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Skills Row */}
+                      <div className="flex items-start gap-2">
+                        <Tag className="w-4 h-4 text-purple-400 flex-shrink-0 mt-0.5" />
+                        <span className="text-xs text-gray-500 font-medium uppercase tracking-wider mr-1">
+                          Skills:
+                        </span>
+                        {isEditing[user._id] ? (
+                          <input
+                            className="input-modern !py-1 !px-2 !text-sm flex-1 !rounded-lg"
+                            defaultValue={
+                              Array.isArray(user.skills)
+                                ? user.skills.join(", ")
+                                : user.skills
+                            }
+                            type="text"
+                            {...register("skills")}
+                          />
+                        ) : (
+                          <div className="flex flex-wrap gap-1">
+                            {user.skills.length >= 1 &&
+                            user.skills[0] !== "" ? (
+                              user.skills.map((skill, i) => (
+                                <span
+                                  key={i}
+                                  className="badge badge-purple !text-[10px]"
+                                >
+                                  {skill.trim()}
+                                </span>
+                              ))
+                            ) : (
+                              <span className="text-sm text-gray-600">N/A</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex items-center gap-2 mt-1 pt-3 border-t border-white/5">
+                        <motion.button
+                          type="button"
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
+                          onClick={() => toggleEdit(user._id)}
+                          className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
+                            isEditing[user._id]
+                              ? "btn-danger !py-1.5 !px-3 !text-xs"
+                              : "bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10"
+                          }`}
+                        >
+                          {isEditing[user._id] ? (
+                            <>
+                              <X className="w-3 h-3" />
+                              Cancel
+                            </>
+                          ) : (
+                            <>
+                              <Pencil className="w-3 h-3" />
+                              Edit
+                            </>
+                          )}
+                        </motion.button>
+
+                        {isEditing[user._id] && (
+                          <motion.button
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            type="submit"
+                            whileHover={{ scale: 1.03 }}
+                            whileTap={{ scale: 0.97 }}
+                            onClick={() => {
+                              setTimeout(() => {
+                                toggleEdit(user._id);
+                              }, 100);
+                            }}
+                            className="btn-success !py-1.5 !px-3 !text-xs flex items-center gap-1.5 cursor-pointer"
+                          >
+                            <Check className="w-3 h-3" />
+                            Save
+                          </motion.button>
+                        )}
+                      </div>
+                    </div>
+                  </form>
+                </motion.div>
+              ))}
+            </AnimatePresence>
           )}
         </div>
       </div>

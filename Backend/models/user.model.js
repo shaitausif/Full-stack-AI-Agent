@@ -13,12 +13,41 @@ const userSchema = new mongoose.Schema({
         type : String,
         required : true
     },
+    name : {
+        type : String,
+        default : ""
+    },
+    phone : {
+        type : String,
+        default : ""
+    },
+    location : {
+        type : String,
+        default : ""
+    },
+    bio : {
+        type : String,
+        maxlength : 300,
+        default : ""
+    },
     role : {
         type : String,
         default : "user",
         enum : ["user","moderator", "admin"]
     },
-    skills : [String]
+    skills : [String],
+    resetOtp : {
+        type : String,
+        default : null
+    },
+    resetOtpExpiry : {
+        type : Date,
+        default : null
+    },
+    isOtpVerified : {
+        type : Boolean,
+        default : false
+    }
 
 }, {timestamps : true}) 
 
