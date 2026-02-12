@@ -24,6 +24,11 @@ if (process.env.NODE_ENV === 'development') {
     origin: 'http://localhost:5173', // Your local Vite dev server
     credentials: true
   }));
+}else{
+  app.use(cors({
+    origin: "https://full-stack-ai-agent-eight.vercel.app",
+    credentials : true
+  }))
 }
 
 
