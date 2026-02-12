@@ -22,7 +22,7 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
       const res = await fetch(`${import.meta.env.NODE_ENV === 'production' ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/me` : `/api/auth/me`}`, {method : 'GET', credentials : 'include'})
       data = await res.json();
       if(data.authenticated){
-        console.log("User is authenticated")
+       
         dispatch(setuserData(data.user))
         if(!protectedRoute){
           navigate("/")
@@ -30,7 +30,7 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
           setloading(false)
         }
       }else{
-        console.log("User is not authenticated")
+      
         if(protectedRoute){
           
           navigate("/login")

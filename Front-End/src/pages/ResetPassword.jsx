@@ -103,7 +103,7 @@ const ResetPassword = () => {
         }
       }
     } catch (error) {
-      console.log("Reset password error:", error);
+    
       toast.error("Something went wrong", {
         closeOnClick: true,
         autoClose: 3000,

@@ -42,7 +42,6 @@ const ForgotPassword = () => {
       );
       navigate("/verify-otp", { state: { email } });
     } catch (error) {
-      console.log("Forgot password error:", error);
       // Still navigate to prevent enumeration
       toast.success(
         "If an account with that email exists, a password reset OTP has been sent.",

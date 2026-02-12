@@ -52,7 +52,6 @@ const SignUp = () => {
         reset();
         navigate("/");
       } else {
-        console.log(data);
         toast.error(data.message || "Signup Failed", {
           closeOnClick: true,
           autoClose: 3000,

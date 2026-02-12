@@ -108,7 +108,7 @@ const Admin = () => {
     try {
       const arr = dataa.skills?.split(",");
       const dataaa = { role: dataa.role, skills: arr, email: email };
-      console.log(dataaa);
+      
       const res = await fetch(
         `${
           import.meta.env.NODE_ENV === "production"

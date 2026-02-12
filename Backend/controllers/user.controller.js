@@ -97,7 +97,7 @@ export const login = async (req, res) => {
       .cookie("accessToken", token, options)
       .json(new ApiResponse(200, { user, token }, "Login Successful"));
 
-      console.log("Set-Cookie Header:", res.getHeader("Set-Cookie"));
+     
   } catch (error) {
     res
       .status(500)

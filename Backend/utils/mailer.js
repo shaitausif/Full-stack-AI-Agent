@@ -26,7 +26,7 @@ export const sendMail = async (to, subject, text) => {
     // html: "<b>Hello world?</b>", // HTML body
   });
 
-  console.log("Message sent:", info);
+  
   return info
 })();
 

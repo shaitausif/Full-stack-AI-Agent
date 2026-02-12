@@ -183,7 +183,7 @@ const VerifyOtp = () => {
       setSecondsLeft(OTP_EXPIRY_SECONDS);
       inputRefs.current[0]?.focus();
     } catch (error) {
-      console.log("Resend OTP error:", error);
+     
       toast.error("Failed to resend OTP", {
         closeOnClick: true,
         autoClose: 3000,
