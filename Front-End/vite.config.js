@@ -10,14 +10,14 @@ export default defineConfig(({ mode }) => {
     // Vite's server.proxy is only used during local development (i.e. when running npm run dev).
     // It's useful to redirect /api to your backend (to avoid CORS issues locally).
     // But in production, Vite builds static files, and this proxy is ignored.
-    server: {
-      proxy: {
-        '/api': {
-          target: env.VITE_BACKEND_URL, // now it works!
-          changeOrigin: true,
-          secure: true, // true in production
-        },
-      },
-    },
+    // server: {
+    //   proxy: {
+    //     '/api': {
+    //       target: env.VITE_BACKEND_URL, // now it works!
+    //       changeOrigin: true,
+    //       secure: true, // true in production
+    //     },
+    //   },
+    // },
  };  // I commented out this one in production
 });

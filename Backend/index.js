@@ -35,14 +35,14 @@ app.use(cookieParser())
 import userRouter from './routes/user.route.js'
 import ticketRouter from "./routes/ticket.route.js"
 import { inngest } from './inngest/client.js'
-// import { keepAliveFn } from './inngest/functions/render-keep-alive.js'
+import { keepAliveFn } from './inngest/functions/render-keep-alive.js'
 // Routes
 app.use("/api/auth", userRouter)
 app.use("/api/tickets", ticketRouter)
 
 
 // Api route for inngest
-app.use("/api/inngest", serve({client : inngest, functions : [onUserSignUp, onTicketCreated],
+app.use("/api/inngest", serve({client : inngest, functions : [onUserSignUp, onTicketCreated, keepAliveFn],
   signingKey : process.env.INNGEST_SIGNING_KEY // It's necessary to use it here after pushing the app in production
 }))
 
