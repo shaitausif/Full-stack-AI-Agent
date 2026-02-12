@@ -44,7 +44,7 @@ const Profile = () => {
       setLoading(true);
       const res = await fetch(
         `${
-          import.meta.env.NODE_ENV === "production"
+          import.meta.env.MODE === "production"
             ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/profile`
             : "/api/auth/profile"
         }`,
@@ -81,7 +81,7 @@ const Profile = () => {
       setSaving(true);
       const res = await fetch(
         `${
-          import.meta.env.NODE_ENV === "production"
+          import.meta.env.MODE === "production"
             ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/profile`
             : "/api/auth/profile"
         }`,

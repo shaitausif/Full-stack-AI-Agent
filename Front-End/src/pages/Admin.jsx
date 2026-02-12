@@ -41,7 +41,7 @@ const Admin = () => {
 
       const res = await fetch(
         `${
-          import.meta.env.NODE_ENV === "production"
+          import.meta.env.MODE === "production"
             ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/search/${debouncedSearch}`
             : `/api/auth/search/${debouncedSearch}`
         }`
@@ -71,7 +71,7 @@ const Admin = () => {
       setfetchLoading(true);
       const res = await fetch(
         `${
-          import.meta.env.NODE_ENV === "production"
+          import.meta.env.MODE === "production"
             ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/users`
             : "/api/auth/users"
         }`,
@@ -111,7 +111,7 @@ const Admin = () => {
       
       const res = await fetch(
         `${
-          import.meta.env.NODE_ENV === "production"
+          import.meta.env.MODE === "production"
             ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/update-user`
             : "/api/auth/update-user"
         }`,

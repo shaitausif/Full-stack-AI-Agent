@@ -34,7 +34,7 @@ const Ticket = () => {
       setloading(true);
       const res = await fetch(
         `${
-          import.meta.env.NODE_ENV === "production"
+          import.meta.env.MODE === "production"
             ? `${import.meta.env.VITE_BACKEND_URL}/api/tickets/${id}`
             : `/api/tickets/${id}`
         }`,
@@ -74,7 +74,7 @@ const Ticket = () => {
       setDeleting(true);
       const res = await fetch(
         `${
-          import.meta.env.NODE_ENV === "production"
+          import.meta.env.MODE === "production"
             ? `${import.meta.env.VITE_BACKEND_URL}/api/tickets/${id}`
             : `/api/tickets/${id}`
         }`,

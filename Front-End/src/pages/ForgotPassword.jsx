@@ -23,7 +23,7 @@ const ForgotPassword = () => {
     try {
       const res = await fetch(
         `${
-          import.meta.env.NODE_ENV === "production"
+          import.meta.env.MODE === "production"
             ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/forgot-password`
             : "/api/auth/forgot-password"
         }`,

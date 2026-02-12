@@ -19,7 +19,7 @@ const AuthCheck = ({children, protected : protectedRoute}) => {
      const checkAuth = async () => {
       let data;
     try {
-      const res = await fetch(`${import.meta.env.NODE_ENV === 'production' ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/me` : `/api/auth/me`}`, {method : 'GET', credentials : 'include'})
+      const res = await fetch(`${import.meta.env.MODE === 'production' ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/me` : `/api/auth/me`}`, {method : 'GET', credentials : 'include'})
       data = await res.json();
       if(data.authenticated){
        

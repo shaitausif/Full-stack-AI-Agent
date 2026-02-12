@@ -55,7 +55,7 @@ const ResetPassword = () => {
     try {
       const res = await fetch(
         `${
-          import.meta.env.NODE_ENV === "production"
+          import.meta.env.MODE === "production"
             ? `${import.meta.env.VITE_BACKEND_URL}/api/auth/reset-password`
             : "/api/auth/reset-password"
         }`,
